@@ -40,16 +40,27 @@ function generateQR() {
 }
 
 
-// Download as PNG
+// Download as PNG (works better on mobile)
 function downloadImage() {
   let img = document.querySelector("#qrcode img");
-  if (!img) return alert("Please generate a QR first!");
+  if (!img) return;
 
-  let link = document.createElement("a");
-  link.href = img.src;
-  link.download = "qrcode.png";
-  link.click();
+  // Convert image src to blob
+  fetch(img.src)
+    .then(res => res.blob())
+    .then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "qrcode.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    })
+    .catch(err => console.error("Error downloading image:", err));
 }
+
 
 // Download as PDF
 // Download as PDF
