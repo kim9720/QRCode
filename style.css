@@ -1,0 +1,180 @@
+/* Background with waving gradient */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(-45deg,  #ff4b2b, #9f38f9);
+  background-size: 400% 400%;
+  animation: gradientWave 12s ease infinite;
+}
+
+/* Gradient animation */
+/* @keyframes gradientWave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+} */
+
+/* Container card */
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  width: 400px;
+  max-width: 90%;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Heading & subtitle */
+h1 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 28px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+/* Input */
+input {
+  width: 90%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  outline: none;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+input:focus {
+  border-color: #ff416c;
+  box-shadow: 0 0 8px rgba(255,65,108,0.5);
+}
+
+/* Buttons */
+button {
+  padding: 14px 24px;
+  border: none;
+  background: linear-gradient(135deg, #ff4b2b, #9f38f9);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* QR code box */
+#qrcode {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Download buttons */
+.download-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.download-buttons button {
+  background: linear-gradient(135deg, #ff4b2b, #9f38f9);
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.download-buttons button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+footer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+/* Tanzania flag gradient text */
+.wave-flag {
+  background: linear-gradient(135deg, #ffe600, #00a1e4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: wave 1.5s ease-in-out infinite;
+}
+
+/* Wave animation */
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+}
+
+
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Mobile View */
+@media screen and (max-width: 480px) {
+  h1 { font-size: 22px; }
+  .subtitle { font-size: 14px; }
+  input, button, .download-buttons button {
+    width: 90%;
+    font-size: 15px;
+    padding: 12px;
+  }
+  .container { padding: 20px; border-radius: 20px; }
+}
+/* Shake animation for input */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s;
+  border-color: #ff416c; /* Highlight in red while shaking */
+  box-shadow: 0 0 8px rgba(255,65,108,0.5);
+}

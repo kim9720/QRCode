@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!-- Outer QR code corners -->
+     <rect x="2" y="2" width="136" height="136" rx="15" ry="15" fill="none" stroke="#000" stroke-width="4"/>
+
+  <rect x="10" y="10" width="30" height="30" fill="#ff416c"/>
+  <rect x="80" y="10" width="30" height="30" fill="#ff4b2b"/>
+  <!-- <rect x="10" y="80" width="30" height="30" fill="#1f12b5"/> -->
+  
+  <!-- Dots inside QR -->
+  <rect x="50" y="20" width="10" height="10" fill="#9f38f9"/>
+  <rect x="70" y="50" width="10" height="10" fill="#ff416c"/>
+  <!-- <rect x="40" y="70" width="10" height="10" fill="#00a1e4"/> -->
+  
+  <!-- Your initials inside the QR -->
+  <text x="55" y="95" font-size="18" font-family="Segoe UI, sans-serif" fill="#ff4b2b" font-weight="bold">MOO</text>
+</svg>

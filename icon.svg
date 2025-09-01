@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+  <!-- Outer border -->
+  <rect x="2" y="2" width="136" height="136" rx="15" ry="15" fill="none" stroke="#000" stroke-width="4"/>
+
+  <!-- Background (white) -->
+  <rect x="0" y="0" width="140" height="140" fill="#fff" rx="15" ry="15"/>
+
+  <!-- Outer QR corners (black) -->
+  <rect x="10" y="10" width="40" height="40" fill="#000"/>
+  <rect x="90" y="10" width="40" height="40" fill="#000"/>
+  <rect x="10" y="90" width="40" height="40" fill="#000"/>
+
+  <!-- Inner QR dots (black) -->
+  <rect x="55" y="25" width="10" height="10" fill="#000"/>
+  <rect x="70" y="50" width="10" height="10" fill="#000"/>
+  <rect x="40" y="70" width="10" height="10" fill="#000"/>
+
+  <!-- Your initials inside (black) -->
+  <text x="70" y="120" font-size="20" font-family="Arial, sans-serif" fill="#000" font-weight="bold" text-anchor="middle">MH</text>
+</svg>

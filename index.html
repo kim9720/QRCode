@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <link rel="icon" type="image/png/svg" href="icon.svg">
+
+ 
+
+
+</head>
+
+<body>
+    <div class="container">
+        <!-- <img src="logo.svg" height="80px"  alt="QR Code Icon" class="icon"> -->
+        <h1>QR Code Generator</h1>
+        <p class="subtitle">Paste any text or link below to create a QR Code instantly.</p>
+
+        <input type="text" id="text" placeholder="Enter text or link">
+        <button onclick="generateQR()">Generate</button>
+
+        <div id="qrcode"></div>
+
+<!-- Download Buttons -->
+<div class="download-buttons" id="downloadBtns" style="display:none;">
+  <button onclick="downloadImage()">Download PNG</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+</div>
+
+    </div>
+
+   <!-- Footer -->
+<!-- Footer -->
+<footer>
+  <p>Developed by 
+    <a href="https://www.linkedin.com/in/mohamed-hababuuu-49b79120a/" target="_blank" rel="noopener noreferrer">
+      <span class="wave-flag">Mohamed Hababuu</span>
+    </a>
+  </p>
+</footer>
+
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
