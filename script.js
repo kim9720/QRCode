@@ -1,42 +1,34 @@
 function generateQR() {
-  let qrContainer = document.getElementById("qrcode");
-  let textInput = document.getElementById("text");
-  let text = textInput.value.trim();
-  let downloadBtns = document.getElementById("downloadBtns");
+  const qrContainer = document.getElementById("qrcode");
+  const textInput = document.getElementById("text");
+  const text = textInput.value.trim();
+  const downloadBtns = document.getElementById("downloadBtns");
 
   qrContainer.innerHTML = ""; // Clear old QR
+  downloadBtns.style.display = "none"; // hide buttons initially
 
-  if (text === "") {
-    // Shake the input
+  if (!text) {
+    // Shake input
     textInput.classList.add("shake");
-
-    // Remove shake class after animation ends
-    setTimeout(() => {
-      textInput.classList.remove("shake");
-    }, 500);
-
-    // Vibrate on mobile if supported
-    if (navigator.vibrate) {
-      navigator.vibrate(200); // vibrate for 200ms
-    }
-
-    return; // stop function
+    setTimeout(() => textInput.classList.remove("shake"), 500);
+    if (navigator.vibrate) navigator.vibrate(200);
+    return;
   }
 
-  // Generate QR
+  // Generate QR code
   new QRCode(qrContainer, {
     text: text,
     width: 200,
     height: 200,
+    correctLevel: QRCode.CorrectLevel.H,
   });
 
-  // Show download buttons after QR is generated
+  // Wait a little for QR code element to be added, then show buttons
   setTimeout(() => {
-    let img = qrContainer.querySelector("img");
-    if (img) {
+    if (qrContainer.querySelector("canvas") || qrContainer.querySelector("img")) {
       downloadBtns.style.display = "flex";
     }
-  }, 300);
+  }, 200); // 200ms usually enough
 }
 
 
@@ -64,24 +56,52 @@ function downloadImage() {
 
 // Download as PDF
 function downloadPDF() {
-  let img = document.querySelector("#qrcode img");
-  if (!img) return;
+  const qrContainer = document.getElementById("qrcode");
+  if (!qrContainer) return;
+
+  const qrCanvas = qrContainer.querySelector("canvas");
+  if (!qrCanvas) {
+    alert("Please generate a QR code first!");
+    return;
+  }
 
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
-  pdf.text("QR Code", 90, 20);
-  pdf.addImage(img.src, "PNG", 55, 30, 100, 100);
 
-  // Check if mobile
+  const imgData = qrCanvas.toDataURL("image/png");
+  pdf.text("QR Code", 90, 20);
+  pdf.addImage(imgData, "PNG", 55, 30, 100, 100);
+
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    const pdfDataUri = pdf.output('dataurlstring');
+    window.open(pdfDataUri, '_blank'); // open in viewer
+  } else {
+    pdf.save("qrcode.pdf"); // download on desktop
+  }
+}
+
+
+// Helper function to create PDF from canvas
+function createPDF(canvas) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  const imgData = canvas.toDataURL("image/png");
+  pdf.text("QR Code", 90, 20);
+  pdf.addImage(imgData, "PNG", 55, 30, 100, 100);
+
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   if (isMobile) {
-    // Open PDF in new tab for mobile viewers
+    // Open PDF in new tab on mobile
     const pdfDataUri = pdf.output('dataurlstring');
     window.open(pdfDataUri, '_blank');
   } else {
-    // Desktop: trigger download normally
+    // Desktop: download
     pdf.save("qrcode.pdf");
   }
 }
+
+
 
