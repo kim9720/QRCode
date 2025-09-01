@@ -63,7 +63,6 @@ function downloadImage() {
 
 
 // Download as PDF
-// Download as PDF
 function downloadPDF() {
   let img = document.querySelector("#qrcode img");
   if (!img) return;
@@ -73,17 +72,16 @@ function downloadPDF() {
   pdf.text("QR Code", 90, 20);
   pdf.addImage(img.src, "PNG", 55, 30, 100, 100);
 
-  // Generate blob instead of direct save
-  const pdfBlob = pdf.output("blob");
+  // Check if mobile
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // Create download link with correct MIME type
-  const blobUrl = URL.createObjectURL(pdfBlob);
-  const link = document.createElement("a");
-  link.href = blobUrl;
-  link.download = "qrcode.pdf";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(blobUrl);
+  if (isMobile) {
+    // Open PDF in new tab for mobile viewers
+    const pdfDataUri = pdf.output('dataurlstring');
+    window.open(pdfDataUri, '_blank');
+  } else {
+    // Desktop: trigger download normally
+    pdf.save("qrcode.pdf");
+  }
 }
 
