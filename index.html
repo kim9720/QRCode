@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>QR Code Generator & Scanner</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <link rel="icon" type="image/png/svg" href="icon.svg">
+    <link rel="stylesheet" href="style.css">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05LEMBPCKE"></script>
     <script>
@@ -20,15 +21,43 @@
 <body>
     <main>
         <div class="container">
-            <h1>QR Code Generator</h1>
-            <p class="subtitle">Paste any text or link below to create a QR Code instantly.</p>
-            <input type="text" id="text" placeholder="Enter text or link">
-            <div id="spinner" style="display:none;">Loading...</div>
-            <button onclick="generateQR()" title="Generate your QRcode now">Generate</button>
-            <div id="qrcode"></div>
-            <div class="download-buttons" id="downloadBtns" style="display:none;">
-                <button onclick="downloadImage()" title="Download as image/PNG">Download PNG</button>
-                <button onclick="downloadPDF()" title="Download as PDF">Download PDF</button>
+            <h1>QR Code Generator & Scanner</h1>
+            <p class="subtitle">Generate QR codes or scan existing ones with your camera</p>
+            
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="showTab('generator')">Generate QR</button>
+                <button class="tab-button" onclick="showTab('scanner')">Scan QR</button>
+            </div>
+
+            <!-- QR Generator Tab -->
+            <div id="generator" class="tab-content active">
+                <p class="subtitle">Paste any text or link below to create a QR Code instantly.</p>
+                <input type="text" id="text" placeholder="Enter text or link">
+                <div id="spinner" style="display:none;">Loading...</div>
+                <button onclick="generateQR()" title="Generate your QRcode now">Generate</button>
+                <div id="qrcode"></div>
+                <div class="download-buttons" id="downloadBtns" style="display:none;">
+                    <button onclick="downloadImage()" title="Download as image/PNG">Download PNG</button>
+                    <button onclick="downloadPDF()" title="Download as PDF">Download PDF</button>
+                </div>
+            </div>
+
+            <!-- QR Scanner Tab -->
+            <div id="scanner" class="tab-content">
+                <p class="subtitle">Use your camera to scan QR codes instantly</p>
+                <div id="reader"></div>
+                
+                <div class="scanner-buttons">
+                    <button id="start-btn" onclick="startScanning()">Start Scanner</button>
+                    <button id="stop-btn" onclick="stopScanning()" disabled>Stop Scanner</button>
+                    <button id="copy-btn" onclick="copyToClipboard()" disabled>Copy Result</button>
+                </div>
+                
+                <div id="status" class="status status-ready">Click "Start Scanner" to begin</div>
+                
+                <div class="result-box">
+                    <div id="result" class="no-result">No QR code scanned yet</div>
+                </div>
             </div>
         </div>
     </main>
@@ -39,6 +68,168 @@
             </a>
         </p>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        // QR Generator functions
+        let qrCode;
+
+        function generateQR() {
+            const text = document.getElementById('text').value.trim();
+            const textInput = document.getElementById('text');
+            
+            if (!text) {
+                // Add shake animation to input
+                textInput.classList.add('shake');
+                setTimeout(() => textInput.classList.remove('shake'), 500);
+                return;
+            }
+
+            const spinner = document.getElementById('spinner');
+            const qrCodeDiv = document.getElementById('qrcode');
+            const downloadBtns = document.getElementById('downloadBtns');
+
+            spinner.style.display = 'block';
+            qrCodeDiv.innerHTML = '';
+            downloadBtns.style.display = 'none';
+
+            setTimeout(() => {
+                if (qrCode) {
+                    qrCode.clear();
+                }
+
+                qrCode = new QRCode(qrCodeDiv, {
+                    text: text,
+                    width: 256,
+                    height: 256,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                spinner.style.display = 'none';
+                downloadBtns.style.display = 'flex';
+            }, 500);
+        }
+
+        function downloadImage() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        function downloadPDF() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 50, 50, 100, 100);
+                pdf.save('qrcode.pdf');
+            }
+        }
+
+        // QR Scanner functions
+        let scanner = null;
+        let isScanning = false;
+        let lastResult = '';
+
+        function startScanning() {
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            
+            startBtn.disabled = true;
+            updateStatus('Starting camera...', 'scanning');
+
+            scanner = new Html5QrcodeScanner("reader", {
+                fps: 10,
+                qrbox: 250
+            });
+
+            scanner.render(
+                function(decodedText) {
+                    lastResult = decodedText;
+                    document.getElementById('result').innerHTML = `<div class="result-text">${decodedText}</div>`;
+                    document.getElementById('copy-btn').disabled = false;
+                    updateStatus('QR code found!', 'success');
+                },
+                function(error) {
+                    if (!error.includes('No QR code found')) {
+                        console.log('Scan error:', error);
+                    }
+                }
+            );
+
+            isScanning = true;
+            stopBtn.disabled = false;
+            updateStatus('Point camera at QR code', 'scanning');
+        }
+
+        function stopScanning() {
+            if (scanner) {
+                scanner.clear();
+                scanner = null;
+            }
+            
+            isScanning = false;
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('stop-btn').disabled = true;
+            updateStatus('Scanner stopped', 'ready');
+        }
+
+        function copyToClipboard() {
+            if (lastResult) {
+                navigator.clipboard.writeText(lastResult).then(function() {
+                    updateStatus('Copied to clipboard!', 'success');
+                }).catch(function() {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = lastResult;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    updateStatus('Copied to clipboard!', 'success');
+                });
+            }
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status status-${type}`;
+        }
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Stop scanner if switching away from scanner tab
+            if (tabName !== 'scanner' && isScanning) {
+                stopScanning();
+            }
+        }
+
+        // Allow Enter key to generate QR code
+        document.getElementById('text').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateQR();
+            }
+        });
+    </script>
 </body>
 </html>
