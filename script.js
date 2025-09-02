@@ -5,7 +5,7 @@ function generateQR() {
   const downloadBtns = document.getElementById("downloadBtns");
 
   qrContainer.innerHTML = ""; // Clear old QR
-  downloadBtns.style.display = "none"; // hide buttons initially
+  downloadBtns.style.display = "none"; // Hide buttons initially
 
   if (!text) {
     // Shake input
@@ -23,85 +23,57 @@ function generateQR() {
     correctLevel: QRCode.CorrectLevel.H,
   });
 
-  // Wait a little for QR code element to be added, then show buttons
+  // Wait for QR code to render, then show buttons
   setTimeout(() => {
-    if (qrContainer.querySelector("canvas") || qrContainer.querySelector("img")) {
+    if (qrContainer.querySelector("canvas")) {
       downloadBtns.style.display = "flex";
     }
-  }, 200); // 200ms usually enough
+  }, 200);
 }
 
-
-// Download as PNG (works better on mobile)
 function downloadImage() {
-  let img = document.querySelector("#qrcode img");
-  if (!img) return;
+  const qrContainer = document.getElementById("qrcode");
+  const canvas = qrContainer.querySelector("canvas");
+  if (!canvas) {
+    alert("Please generate a QR code first!");
+    return;
+  }
 
-  // Convert image src to blob
-  fetch(img.src)
-    .then(res => res.blob())
-    .then(blob => {
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = "qrcode.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-    })
-    .catch(err => console.error("Error downloading image:", err));
+  // Convert canvas to PNG blob
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "qrcode.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, "image/png");
 }
 
-
-// Download as PDF
 function downloadPDF() {
   const qrContainer = document.getElementById("qrcode");
-  if (!qrContainer) return;
-
-  const qrCanvas = qrContainer.querySelector("canvas");
-  if (!qrCanvas) {
+  const canvas = qrContainer.querySelector("canvas");
+  if (!canvas) {
     alert("Please generate a QR code first!");
     return;
   }
 
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
-
-  const imgData = qrCanvas.toDataURL("image/png");
-  pdf.text("QR Code", 90, 20);
-  pdf.addImage(imgData, "PNG", 55, 30, 100, 100);
-
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    const pdfDataUri = pdf.output('dataurlstring');
-    window.open(pdfDataUri, '_blank'); // open in viewer
-  } else {
-    pdf.save("qrcode.pdf"); // download on desktop
-  }
-}
-
-
-// Helper function to create PDF from canvas
-function createPDF(canvas) {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-
   const imgData = canvas.toDataURL("image/png");
   pdf.text("QR Code", 90, 20);
   pdf.addImage(imgData, "PNG", 55, 30, 100, 100);
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    // Open PDF in new tab on mobile
-    const pdfDataUri = pdf.output('dataurlstring');
-    window.open(pdfDataUri, '_blank');
-  } else {
-    // Desktop: download
-    pdf.save("qrcode.pdf");
-  }
+  // Generate PDF blob
+  const blob = pdf.output("blob");
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "qrcode.pdf";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
-
-
-
