@@ -1,375 +1,226 @@
 /* Background with waving gradient */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(-45deg, #ff4b2b, #9f38f9);
-            background-size: 400% 400%;
-            animation: gradientWave 12s ease infinite;
-        }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(-45deg, #ff4b2b, #9f38f9);
+  background-size: 400% 400%;
+  animation: gradientWave 12s ease infinite;
+}
 
-        /* Main wrapper for centering */
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            width: 100%;
-        }
+/* Main wrapper for centering */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+}
 
-        /* Gradient animation */
-        @keyframes gradientWave {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+/* Gradient animation */
+@keyframes gradientWave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-        /* Container card */
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 500px;
-            animation: fadeIn 0.8s ease-in-out;
-        }
+/* Container card */
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  animation: fadeIn 0.8s ease-in-out;
+}
 
-        /* Heading & subtitle */
-        h1 {
-            margin-bottom: 8px;
-            color: #333;
-            font-size: clamp(24px, 6vw, 28px);
-        }
+/* Heading & subtitle */
+h1 {
+  margin-bottom: 8px;
+  color: #333;
+  font-size: clamp(24px, 6vw, 28px);
+}
 
-        .subtitle {
-            font-size: clamp(13px, 4vw, 15px);
-            color: #555;
-            margin-bottom: 20px;
-        }
+.subtitle {
+  font-size: clamp(13px, 4vw, 15px);
+  color: #555;
+  margin-bottom: 20px;
+}
 
-        /* Tab buttons */
-        .tab-buttons {
-            display: flex;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 15px;
-            padding: 5px;
-            gap: 5px;
-        }
+/* Input */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: clamp(14px, 4vw, 16px);
+  box-sizing: border-box;
+  transition: all 0.3s;
+}
 
-        .tab-button {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: clamp(13px, 4vw, 15px);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: #666;
-            touch-action: manipulation;
-        }
+input:focus {
+  border-color: #ff416c;
+  box-shadow: 0 0 6px rgba(255, 65, 108, 0.5);
+}
 
-        .tab-button.active {
-            background: linear-gradient(135deg, #ff4b2b, #9f38f9);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+/* Buttons */
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: linear-gradient(135deg, #ff4b2b, #9f38f9);
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: clamp(14px, 4vw, 16px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  touch-action: manipulation;
+}
 
-        .tab-content {
-            display: none;
-        }
+button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
 
-        .tab-content.active {
-            display: block;
-        }
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-        /* Input */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            outline: none;
-            font-size: clamp(14px, 4vw, 16px);
-            box-sizing: border-box;
-            transition: all 0.3s;
-        }
+/* QR code box */
+#qrcode {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
 
-        input:focus {
-            border-color: #ff416c;
-            box-shadow: 0 0 6px rgba(255, 65, 108, 0.5);
-        }
+/* Download buttons */
+.download-buttons {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
 
-        /* Buttons */
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            background: linear-gradient(135deg, #ff4b2b, #9f38f9);
-            color: white;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: clamp(14px, 4vw, 16px);
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            touch-action: manipulation;
-            margin-bottom: 8px;
-        }
+.download-buttons button {
+  width: 100%;
+  max-width: 200px;
+  padding: 12px;
+  font-size: clamp(13px, 4vw, 15px);
+}
 
-        button:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
-        }
+/* Footer */
+footer {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 600;
+  padding: 10px 0;
+  position: relative;
+}
 
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+/* Tanzania flag gradient text */
+.wave-flag {
+  background: linear-gradient(135deg, #ffe600, #00a1e4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  animation: wave 1.5s ease-in-out infinite;
+}
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+/* Wave animation */
+@keyframes wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+  75% { transform: translateY(-4px) rotate(-2deg); }
+}
 
-        /* Scanner specific buttons */
-        .scanner-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 16px 0;
-        }
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
 
-        .scanner-buttons button {
-            margin-bottom: 0;
-        }
+/* Shake animation for input */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
 
-        /* QR code box */
-        #qrcode {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-        }
+.shake {
+  animation: shake 0.5s;
+  border-color: #ff416c;
+  box-shadow: 0 0 6px rgba(255, 65, 108, 0.5);
+}
 
-        #qrcode canvas, #qrcode img {
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+/* Mobile View */
+@media screen and (max-width: 600px) {
+  body {
+    min-height: 100vh;
+    padding: 10px;
+  }
 
-        /* Download buttons */
-        .download-buttons {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
+  main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-        .download-buttons button {
-            width: 100%;
-            max-width: 200px;
-            padding: 12px;
-            font-size: clamp(13px, 4vw, 15px);
-        }
+  .container {
+    padding: 16px;
+    border-radius: 16px;
+  }
 
-        /* Scanner specific styles */
-        #reader {
-            width: 100%;
-            margin: 20px 0;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+  h1 {
+    font-size: clamp(20px, 5.5vw, 24px);
+  }
 
-        #reader video {
-            border-radius: 15px;
-        }
+  .subtitle {
+    font-size: clamp(12px, 3.5vw, 14px);
+  }
 
-        .result-box {
-            background: rgba(248, 249, 250, 0.9);
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 16px 0;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  input {
+    padding: 10px;
+    font-size: clamp(13px, 3.5vw, 15px);
+  }
 
-        .result-text {
-            font-size: clamp(13px, 4vw, 15px);
-            word-break: break-all;
-            color: #333;
-            font-family: 'Courier New', monospace;
-        }
+  button {
+    padding: 12px;
+    font-size: clamp(13px, 3.5vw, 15px);
+  }
 
-        .no-result {
-            color: #666;
-            font-style: italic;
-            font-size: clamp(13px, 4vw, 15px);
-        }
+  .download-buttons {
+    gap: 8px;
+  }
 
-        .status {
-            padding: 10px 16px;
-            margin: 12px 0;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: clamp(13px, 4vw, 15px);
-            transition: all 0.3s ease;
-        }
+  .download-buttons button {
+    padding: 10px;
+    font-size: clamp(12px, 3.5vw, 14px);
+  }
 
-        .status-ready {
-            background: rgba(204, 231, 255, 0.9);
-            color: #004085;
-        }
+  #qrcode canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 200px;
+  }
 
-        .status-scanning {
-            background: rgba(212, 237, 218, 0.9);
-            color: #155724;
-        }
-
-        .status-success {
-            background: rgba(209, 236, 241, 0.9);
-            color: #0c5460;
-        }
-
-        .status-error {
-            background: rgba(248, 215, 218, 0.9);
-            color: #721c24;
-        }
-
-        #spinner {
-            color: #ff4b2b;
-            font-weight: 500;
-            margin: 10px 0;
-            font-size: clamp(13px, 4vw, 15px);
-        }
-
-        /* Footer */
-        footer {
-            width: 100%;
-            text-align: center;
-            font-size: clamp(13px, 3.5vw, 15px);
-            font-weight: 600;
-            padding: 10px 0;
-            position: relative;
-            color: white;
-        }
-
-        /* Tanzania flag gradient text */
-        .wave-flag {
-            background: linear-gradient(135deg, #ffe600, #00a1e4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-            animation: wave 1.5s ease-in-out infinite;
-        }
-
-        /* Wave animation */
-        @keyframes wave {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-4px) rotate(-2deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
-            75% { transform: translateY(-4px) rotate(-2deg); }
-        }
-
-        /* Fade in animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Shake animation for input */
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-6px); }
-            80% { transform: translateX(6px); }
-            100% { transform: translateX(0); }
-        }
-
-        .shake {
-            animation: shake 0.5s;
-            border-color: #ff416c;
-            box-shadow: 0 0 6px rgba(255, 65, 108, 0.5);
-        }
-
-        /* Mobile View */
-        @media screen and (max-width: 600px) {
-            body {
-                min-height: 100vh;
-                padding: 10px;
-            }
-
-            main {
-                flex-grow: 1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .container {
-                padding: 16px;
-                border-radius: 16px;
-                max-width: 400px;
-            }
-
-            h1 {
-                font-size: clamp(20px, 5.5vw, 24px);
-            }
-
-            .subtitle {
-                font-size: clamp(12px, 3.5vw, 14px);
-            }
-
-            input {
-                padding: 10px;
-                font-size: clamp(13px, 3.5vw, 15px);
-            }
-
-            button {
-                padding: 12px;
-                font-size: clamp(13px, 3.5vw, 15px);
-            }
-
-            .tab-button {
-                padding: 10px 12px;
-                font-size: clamp(12px, 3.5vw, 14px);
-            }
-
-            .download-buttons {
-                gap: 8px;
-            }
-
-            .download-buttons button {
-                padding: 10px;
-                font-size: clamp(12px, 3.5vw, 14px);
-            }
-
-            .scanner-buttons button {
-                padding: 10px;
-                font-size: clamp(12px, 3.5vw, 14px);
-            }
-
-            #qrcode canvas {
-                width: 100% !important;
-                height: auto !important;
-                max-width: 200px;
-            }
-
-            footer {
-                position: relative;
-                padding: 8px 0;
-            }
-        }
+  footer {
+    position: relative;
+    padding: 8px 0;
+  }
+}
