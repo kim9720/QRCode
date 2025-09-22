@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator & Scanner</title>
+    <title>QR Code Generator & Scanner Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png/svg" href="icon.svg">
+    
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <link rel="icon" type="image/png/svg" href="icon.svg">
-    <link rel="stylesheet" href="style.css">
-    <!-- Google tag (gtag.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05LEMBPCKE"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -19,48 +23,402 @@
     </script>
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+            <span class="theme-icon">🌙</span>
+        </button>
+    </div>
+
     <main>
         <div class="container">
-            <h1>QR Code Generator & Scanner</h1>
-            <p class="subtitle">Generate QR codes or scan existing ones with your camera</p>
+            <h1>QR Code Generator & Scanner Pro</h1>
+            <p class="subtitle">Generate customized QR codes or scan existing ones with advanced features</p>
             
+            <!-- Main Navigation Tabs -->
             <div class="tab-buttons">
-                <button class="tab-button active" onclick="showTab('generator')">Generate QR</button>
-                <button class="tab-button" onclick="showTab('scanner')">Scan QR</button>
+                <button class="tab-button active" onclick="showTab('generator')">Generate</button>
+                <button class="tab-button" onclick="showTab('scanner')">Scan</button>
+                <button class="tab-button" onclick="showTab('history')">History</button>
+                <button class="tab-button" onclick="showTab('settings')">Settings</button>
             </div>
 
             <!-- QR Generator Tab -->
             <div id="generator" class="tab-content active">
-                <p class="subtitle">Paste any text or link below to create a QR Code instantly.</p>
-                <input type="text" id="text" placeholder="Enter text or link">
-                <div id="spinner" style="display:none;">Loading...</div>
-                <button onclick="generateQR()" title="Generate your QRcode now">Generate</button>
+                <!-- QR Type Selection -->
+                <div class="qr-type-selector">
+                    <label>QR Code Type:</label>
+                    <select id="qr-type" onchange="changeQRType()">
+                        <option value="text">Text/URL</option>
+                        <option value="wifi">WiFi Network</option>
+                        <option value="vcard">Contact Card</option>
+                        <option value="sms">SMS Message</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone Number</option>
+                        <option value="calendar">Calendar Event</option>
+                        <option value="social">Social Media</option>
+                        <option value="crypto">Crypto Wallet</option>
+                    </select>
+                </div>
+
+                <!-- Dynamic Input Forms -->
+                <div id="text-form" class="input-form active">
+                    <input type="text" id="text-input" placeholder="Enter text or URL">
+                </div>
+
+                <div id="wifi-form" class="input-form">
+                    <input type="text" id="wifi-ssid" placeholder="Network Name (SSID)">
+                    <input type="password" id="wifi-password" placeholder="Password">
+                    <select id="wifi-security">
+                        <option value="WPA">WPA/WPA2</option>
+                        <option value="WEP">WEP</option>
+                        <option value="nopass">No Password</option>
+                    </select>
+                    <label><input type="checkbox" id="wifi-hidden"> Hidden Network</label>
+                </div>
+
+                <div id="vcard-form" class="input-form">
+                    <input type="text" id="vcard-name" placeholder="Full Name">
+                    <input type="text" id="vcard-phone" placeholder="Phone Number">
+                    <input type="email" id="vcard-email" placeholder="Email">
+                    <input type="text" id="vcard-organization" placeholder="Organization">
+                    <input type="text" id="vcard-title" placeholder="Job Title">
+                    <input type="url" id="vcard-website" placeholder="Website">
+                </div>
+
+                <div id="sms-form" class="input-form">
+                    <input type="tel" id="sms-number" placeholder="Phone Number">
+                    <textarea id="sms-message" placeholder="Pre-filled message"></textarea>
+                </div>
+
+                <div id="whatsapp-form" class="input-form">
+                    <input type="tel" id="whatsapp-number" placeholder="Phone Number (with country code)">
+                    <textarea id="whatsapp-message" placeholder="Pre-filled message"></textarea>
+                </div>
+
+                <div id="email-form" class="input-form">
+                    <input type="email" id="email-to" placeholder="Recipient Email">
+                    <input type="text" id="email-subject" placeholder="Subject">
+                    <textarea id="email-body" placeholder="Email body"></textarea>
+                </div>
+
+                <div id="phone-form" class="input-form">
+                    <input type="tel" id="phone-number" placeholder="Phone Number">
+                </div>
+
+                <div id="calendar-form" class="input-form">
+                    <input type="text" id="event-title" placeholder="Event Title">
+                    <input type="datetime-local" id="event-start">
+                    <input type="datetime-local" id="event-end">
+                    <input type="text" id="event-location" placeholder="Location">
+                    <textarea id="event-description" placeholder="Description"></textarea>
+                </div>
+
+                <div id="social-form" class="input-form">
+                    <select id="social-platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                    <input type="text" id="social-username" placeholder="Username (without @)">
+                </div>
+
+                <div id="crypto-form" class="input-form">
+                    <select id="crypto-type">
+                        <option value="bitcoin">Bitcoin</option>
+                        <option value="ethereum">Ethereum</option>
+                        <option value="litecoin">Litecoin</option>
+                        <option value="dogecoin">Dogecoin</option>
+                    </select>
+                    <input type="text" id="crypto-address" placeholder="Wallet Address">
+                    <input type="number" id="crypto-amount" placeholder="Amount (optional)" step="0.00000001">
+                    <input type="text" id="crypto-label" placeholder="Label (optional)">
+                    <input type="text" id="crypto-message" placeholder="Message (optional)">
+                </div>
+
+                <!-- Customization Panel -->
+                <div class="customization-panel">
+                    <h3>Customization</h3>
+                    
+                    <div class="custom-row">
+                        <label>Size:</label>
+                        <select id="qr-size">
+                            <option value="128">Small (128px)</option>
+                            <option value="256" selected>Medium (256px)</option>
+                            <option value="512">Large (512px)</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="number" id="custom-size" placeholder="Custom size" style="display:none;" min="100" max="1024">
+                    </div>
+
+                    <div class="custom-row">
+                        <label>Colors:</label>
+                        <div class="color-inputs">
+                            <div>
+                                <label>Foreground:</label>
+                                <input type="color" id="fg-color" value="#000000">
+                            </div>
+                            <div>
+                                <label>Background:</label>
+                                <input type="color" id="bg-color" value="#ffffff">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custom-row">
+                        <label>Style:</label>
+                        <select id="qr-style">
+                            <option value="square">Square</option>
+                            <option value="rounded">Rounded</option>
+                            <option value="dots">Dots</option>
+                        </select>
+                    </div>
+
+                    <div class="custom-row">
+                        <label>Frame:</label>
+                        <select id="qr-frame">
+                            <option value="none">None</option>
+                            <option value="border">Border</option>
+                            <option value="shadow">Shadow</option>
+                            <option value="rounded-border">Rounded Border</option>
+                        </select>
+                    </div>
+
+                    <div class="custom-row">
+                        <label>Logo:</label>
+                        <input type="file" id="logo-upload" accept="image/*">
+                        <button onclick="clearLogo()" class="small-btn">Clear</button>
+                    </div>
+
+                    <div class="custom-row">
+                        <label>Error Correction:</label>
+                        <select id="error-correction">
+                            <option value="L">Low (7%)</option>
+                            <option value="M">Medium (15%)</option>
+                            <option value="Q">Quartile (25%)</option>
+                            <option value="H" selected>High (30%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Generate Button & Loading -->
+                <div id="spinner" class="spinner">Generating...</div>
+                <button onclick="generateQR()" class="generate-btn">Generate QR Code</button>
+                
+                <!-- QR Code Display -->
                 <div id="qrcode"></div>
+                
+                <!-- Download & Actions -->
                 <div class="download-buttons" id="downloadBtns" style="display:none;">
-                    <button onclick="downloadImage()" title="Download as image/PNG">Download PNG</button>
-                    <button onclick="downloadPDF()" title="Download as PDF">Download PDF</button>
+                    <button onclick="downloadImage('png')">PNG</button>
+                    <button onclick="downloadImage('jpg')">JPG</button>
+                    <button onclick="downloadImage('svg')">SVG</button>
+                    <button onclick="downloadPDF()">PDF</button>
+                    <button onclick="addToFavorites()" class="favorite-btn">⭐ Add to Favorites</button>
+                </div>
+
+                <!-- Batch Generation -->
+                <div class="batch-section">
+                    <h3>Batch Generation</h3>
+                    <textarea id="batch-input" placeholder="Enter multiple items (one per line)"></textarea>
+                    <button onclick="generateBatch()">Generate Batch</button>
+                    <div id="batch-results"></div>
+                    <button id="download-batch" onclick="downloadBatch()" style="display:none;">Download All as ZIP</button>
                 </div>
             </div>
 
-            <!-- QR Scanner Tab -->
+            <!-- Scanner Tab -->
             <div id="scanner" class="tab-content">
-                <p class="subtitle">Use your camera to scan QR codes instantly</p>
-                <div id="reader"></div>
+                <p class="subtitle">Use your camera or upload images to scan QR codes</p>
                 
-                <div class="scanner-buttons">
-                    <button id="start-btn" onclick="startScanning()">Start Scanner</button>
-                    <button id="stop-btn" onclick="stopScanning()" disabled>Stop Scanner</button>
-                    <button id="copy-btn" onclick="copyToClipboard()" disabled>Copy Result</button>
+                <!-- Scanner Options -->
+                <div class="scanner-options">
+                    <button class="scanner-mode active" onclick="switchScannerMode('camera')">Camera</button>
+                    <button class="scanner-mode" onclick="switchScannerMode('upload')">Upload Image</button>
+                    <button class="scanner-mode" onclick="switchScannerMode('batch')">Batch Upload</button>
                 </div>
-                
-                <div id="status" class="status status-ready">Click "Start Scanner" to begin</div>
-                
+
+                <!-- Camera Scanner -->
+                <div id="camera-scanner" class="scanner-section active">
+                    <div id="reader"></div>
+                    <div class="scanner-controls">
+                        <button id="start-btn" onclick="startScanning()">Start Scanner</button>
+                        <button id="stop-btn" onclick="stopScanning()" disabled>Stop Scanner</button>
+                        <button id="flashlight-btn" onclick="toggleFlashlight()" disabled>🔦 Flash</button>
+                        <button id="switch-camera-btn" onclick="switchCamera()" disabled>📷 Switch</button>
+                    </div>
+                </div>
+
+                <!-- Upload Scanner -->
+                <div id="upload-scanner" class="scanner-section">
+                    <div class="upload-area" onclick="document.getElementById('image-upload').click()">
+                        <div class="upload-content">
+                            <span class="upload-icon">📁</span>
+                            <p>Click to upload image or drag & drop</p>
+                            <p class="upload-formats">Supports: JPG, PNG, GIF, WebP</p>
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*" onchange="scanUploadedImage()" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Batch Upload Scanner -->
+                <div id="batch-scanner" class="scanner-section">
+                    <div class="upload-area" onclick="document.getElementById('batch-upload').click()">
+                        <div class="upload-content">
+                            <span class="upload-icon">📁</span>
+                            <p>Upload multiple images</p>
+                            <p class="upload-formats">Select multiple files</p>
+                        </div>
+                        <input type="file" id="batch-upload" accept="image/*" multiple onchange="scanBatchImages()" style="display: none;">
+                    </div>
+                    <div id="batch-scan-results"></div>
+                </div>
+
+                <!-- Scanner Status & Results -->
+                <div id="status" class="status status-ready">Ready to scan</div>
                 <div class="result-box">
                     <div id="result" class="no-result">No QR code scanned yet</div>
+                </div>
+                
+                <!-- Scanner Actions -->
+                <div class="scanner-actions">
+                    <button id="copy-btn" onclick="copyToClipboard()" disabled>📋 Copy Result</button>
+                    <button id="save-result-btn" onclick="saveToHistory()" disabled>💾 Save to History</button>
+                    <button id="action-btn" onclick="performSmartAction()" disabled style="display:none;">🚀 Open</button>
+                </div>
+
+                <!-- Format Support -->
+                <div class="format-support">
+                    <h4>Supported Formats:</h4>
+                    <div class="format-badges">
+                        <span class="badge">QR Code</span>
+                        <span class="badge">Data Matrix</span>
+                        <span class="badge">Code 128</span>
+                        <span class="badge">Code 39</span>
+                        <span class="badge">EAN</span>
+                        <span class="badge">UPC</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <div class="history-header">
+                    <h3>History & Favorites</h3>
+                    <div class="history-controls">
+                        <button onclick="clearHistory()">Clear History</button>
+                        <button onclick="exportHistory()">Export</button>
+                        <button onclick="document.getElementById('import-file').click()">Import</button>
+                        <input type="file" id="import-file" accept=".json" onchange="importHistory()" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="filterHistory('all')">All</button>
+                    <button class="filter-btn" onclick="filterHistory('generated')">Generated</button>
+                    <button class="filter-btn" onclick="filterHistory('scanned')">Scanned</button>
+                    <button class="filter-btn" onclick="filterHistory('favorites')">Favorites ⭐</button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-box">
+                    <input type="text" id="history-search" placeholder="Search history..." onkeyup="searchHistory()">
+                </div>
+
+                <!-- History List -->
+                <div id="history-list" class="history-list">
+                    <p class="no-history">No history items yet</p>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="pagination" style="display: none;">
+                    <button onclick="changePage(-1)">← Previous</button>
+                    <span id="page-info"></span>
+                    <button onclick="changePage(1)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h3>Settings & Preferences</h3>
+                
+                <div class="settings-section">
+                    <h4>Default QR Settings</h4>
+                    <div class="setting-item">
+                        <label>Default Size:</label>
+                        <select id="default-size">
+                            <option value="128">Small</option>
+                            <option value="256" selected>Medium</option>
+                            <option value="512">Large</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Default Colors:</label>
+                        <div class="color-inputs">
+                            <input type="color" id="default-fg" value="#000000">
+                            <input type="color" id="default-bg" value="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>Scanner Settings</h4>
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="auto-action" checked> Auto-perform actions on scan</label>
+                    </div>
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="save-scans" checked> Auto-save scanned codes to history</label>
+                    </div>
+                    <div class="setting-item">
+                        <label><input type="checkbox" id="sound-feedback"> Sound feedback</label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>Data Management</h4>
+                    <div class="setting-item">
+                        <label>History limit:</label>
+                        <select id="history-limit">
+                            <option value="50">50 items</option>
+                            <option value="100" selected>100 items</option>
+                            <option value="500">500 items</option>
+                            <option value="unlimited">Unlimited</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <button onclick="exportAllData()">Export All Data</button>
+                        <button onclick="clearAllData()" class="danger-btn">Clear All Data</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>About</h4>
+                    <p>QR Code Generator & Scanner Pro v2.0</p>
+                    <p>Enhanced with advanced features and customization options</p>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-value" id="total-generated">0</span>
+                            <span class="stat-label">Generated</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="total-scanned">0</span>
+                            <span class="stat-label">Scanned</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="total-favorites">0</span>
+                            <span class="stat-label">Favorites</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+
     <footer>
         <p>Developed by
             <a href="https://www.linkedin.com/in/mohamed-hababuuu-49b79120a/" target="_blank" rel="noopener noreferrer">
@@ -69,167 +427,22 @@
         </p>
     </footer>
 
-    <script>
-        // QR Generator functions
-        let qrCode;
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
 
-        function generateQR() {
-            const text = document.getElementById('text').value.trim();
-            const textInput = document.getElementById('text');
-            
-            if (!text) {
-                // Add shake animation to input
-                textInput.classList.add('shake');
-                setTimeout(() => textInput.classList.remove('shake'), 500);
-                return;
-            }
+    <!-- Modal for QR Preview -->
+    <div id="qr-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-qr"></div>
+            <div class="modal-actions">
+                <button onclick="downloadModalQR()">Download</button>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
 
-            const spinner = document.getElementById('spinner');
-            const qrCodeDiv = document.getElementById('qrcode');
-            const downloadBtns = document.getElementById('downloadBtns');
-
-            spinner.style.display = 'block';
-            qrCodeDiv.innerHTML = '';
-            downloadBtns.style.display = 'none';
-
-            setTimeout(() => {
-                if (qrCode) {
-                    qrCode.clear();
-                }
-
-                qrCode = new QRCode(qrCodeDiv, {
-                    text: text,
-                    width: 256,
-                    height: 256,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                spinner.style.display = 'none';
-                downloadBtns.style.display = 'flex';
-            }, 500);
-        }
-
-        function downloadImage() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.download = 'qrcode.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            }
-        }
-
-        function downloadPDF() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF();
-                const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', 50, 50, 100, 100);
-                pdf.save('qrcode.pdf');
-            }
-        }
-
-        // QR Scanner functions
-        let scanner = null;
-        let isScanning = false;
-        let lastResult = '';
-
-        function startScanning() {
-            const startBtn = document.getElementById('start-btn');
-            const stopBtn = document.getElementById('stop-btn');
-            
-            startBtn.disabled = true;
-            updateStatus('Starting camera...', 'scanning');
-
-            scanner = new Html5QrcodeScanner("reader", {
-                fps: 10,
-                qrbox: 250
-            });
-
-            scanner.render(
-                function(decodedText) {
-                    lastResult = decodedText;
-                    document.getElementById('result').innerHTML = `<div class="result-text">${decodedText}</div>`;
-                    document.getElementById('copy-btn').disabled = false;
-                    updateStatus('QR code found!', 'success');
-                },
-                function(error) {
-                    if (!error.includes('No QR code found')) {
-                        console.log('Scan error:', error);
-                    }
-                }
-            );
-
-            isScanning = true;
-            stopBtn.disabled = false;
-            updateStatus('Point camera at QR code', 'scanning');
-        }
-
-        function stopScanning() {
-            if (scanner) {
-                scanner.clear();
-                scanner = null;
-            }
-            
-            isScanning = false;
-            document.getElementById('start-btn').disabled = false;
-            document.getElementById('stop-btn').disabled = true;
-            updateStatus('Scanner stopped', 'ready');
-        }
-
-        function copyToClipboard() {
-            if (lastResult) {
-                navigator.clipboard.writeText(lastResult).then(function() {
-                    updateStatus('Copied to clipboard!', 'success');
-                }).catch(function() {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = lastResult;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    updateStatus('Copied to clipboard!', 'success');
-                });
-            }
-        }
-
-        function updateStatus(message, type) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = `status status-${type}`;
-        }
-
-        // Tab switching function
-        function showTab(tabName) {
-            // Hide all tab contents
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(tab => tab.classList.remove('active'));
-            
-            // Remove active class from all tab buttons
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-
-            // Stop scanner if switching away from scanner tab
-            if (tabName !== 'scanner' && isScanning) {
-                stopScanning();
-            }
-        }
-
-        // Allow Enter key to generate QR code
-        document.getElementById('text').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                generateQR();
-            }
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="script.js"></script>
 </body>
 </html>
